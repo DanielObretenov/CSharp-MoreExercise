@@ -79,24 +79,19 @@ namespace OOP_Exercises
                 string[] input = Console.ReadLine().Split(" ");
                 string name = input[0];
                 double[] grades = input.Select(s => double.Parse(s)).Skip(1).ToArray();
-                for (int i = 0; i < grades.Length; i++)
+                bool allGradesAreCorrect = grades.All(e => (e >= 2 && e <= 6));
+                if (allGradesAreCorrect)
                 {
-                    if (grades[i] >= 2 && grades[i] <= 6)
-                    {
-                        allStudents.Add(new Student(name, grades));
-
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Please enter valid grade in order to get average grades -> {input} ");
-                    }
+                    allStudents.Add(new Student(name, grades));
+                }
+                else
+                {
+                    Console.WriteLine($"Please enter valid grade in order to get average grades for {input[0]} ");
                 }
                 count++;
             }
             return allStudents;
         }
-      
-
     }
 
 }
