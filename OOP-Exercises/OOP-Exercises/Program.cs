@@ -34,7 +34,8 @@ namespace OOP_Exercises
                 string title = input[0];
                 string author = input[1];
                 string publisher = input[2];
-                DateTime releaseDate = DateTime.Parse(input[3]);
+                string inputDate = input[3];
+                DateTime releaseDate = DateTime.ParseExact(inputDate, "dd.MM.yyyy", null);
                 string isbnNumber = input[4];
                 double price = double.Parse(input[5], CultureInfo.InvariantCulture);
                 Book book = new Book(title, author, publisher, releaseDate, isbnNumber, price);
@@ -47,7 +48,7 @@ namespace OOP_Exercises
             foreach (var author in authors)
             {
                 double priceTotal = library.Books.Where(x => x.Author == author).Sum(x => x.Price);
-                Console.WriteLine($"{author} -> {Math.Round(priceTotal, 2)}");
+                Console.WriteLine($"{author} -> {priceTotal:f2}");
             }
 
         }
