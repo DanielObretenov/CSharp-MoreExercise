@@ -16,10 +16,11 @@ namespace OOP_Exercises
             ExerciseOne();
             ExerciseTwo();
             ExerciseThree();
-            ExerciseFour();
+            ExrciseFour();
+            ExersiceFive();
         }
 
-        public static void ExerciseFour()
+        public static Library GetLabrary()
         {
             // Exercise 4 - Get price for books
             // Expected Input - {nubmer of books} /rn {title} {author} {publisher} {release date} {ISBN} {price}.
@@ -43,17 +44,32 @@ namespace OOP_Exercises
                 count++;
             }
             Library library = new Library(books);
-            var authors = books.Select(x => x.Author).Distinct().ToList();
+
+            return library;
+        }
+ 
+        public static void ExrciseFour()
+        {
+            Library library = GetLabrary();
+            var authors = library.Books.Select(x => x.Author).Distinct().ToList();
 
             foreach (var author in authors)
             {
                 double priceTotal = library.Books.Where(x => x.Author == author).Sum(x => x.Price);
                 Console.WriteLine($"{author} -> {priceTotal:f2}");
             }
-
         }
- 
-
+        public static void ExersiceFive()
+        {
+            Library library = GetLabrary();
+            DateTime releaseDateAfter = DateTime.ParseExact(Console.ReadLine(), "dd.MM.yyyy", null);
+            List<Book> books = library.Books.Where(date => date.ReleaseDate >= releaseDateAfter).ToList();
+            for (int i = 0; i < books.Count; i++)
+            {
+                Console.WriteLine($"{books[i].Title} -> {books[i].ReleaseDate}");
+            }
+           
+        }
 
         public static void ExerciseOne()
         {
