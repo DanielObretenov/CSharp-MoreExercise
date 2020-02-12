@@ -1,6 +1,7 @@
 ﻿using OOP_Exercises.Exercise_1;
 using OOP_Exercises.Exercise_3;
 using OOP_Exercises.Exercise_4;
+using OOP_Exercises.Exercise_6;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,19 +14,123 @@ namespace OOP_Exercises
         static void Main(string[] args)
         {
 
-            ExerciseOne();
-            ExerciseTwo();
-            ExerciseThree();
-            ExrciseFour();
-            ExersiceFive();
+            //ExerciseOne();
+            //ExerciseTwo();
+            //ExerciseThree();
+            //ExrciseFour();
+            //ExerciseFive();
+            ExerciseSix();
+
         }
 
-        public static Library GetLabrary()
+        public static Dictionary<string, decimal>  AddProducts()
         {
-            // Exercise 4 - Get price for books
-            // Expected Input - {nubmer of books} /rn {title} {author} {publisher} {release date} {ISBN} {price}.
-            // Expected Output - (Book total price by autor)
+            int numberOfPoducts = int.Parse(Console.ReadLine());
 
+            int counter = 1;
+            Dictionary<string, decimal> products = new Dictionary<string, decimal>();
+
+            while (numberOfPoducts >= counter)
+            {
+                string[] input = Console.ReadLine().Split("-");
+                string product = input[0];
+                decimal price = decimal.Parse(input[1]);
+                if (products.ContainsKey(product))
+                {
+                    products[product] = price;
+                }
+                else
+                {
+                    products.Add(product, price);
+                }
+                counter++;
+            }
+            return products;
+        }
+
+        public static Dictionary<string,Customer> Customer(Dictionary<string, decimal> allProducts)
+        {
+            Dictionary<string, Customer> customersList = new Dictionary<string, Customer>();
+            string[] customerOrders = Console.ReadLine().Split(new char[] { '-', ',' });
+
+            while (customerOrders[0] != "end of clients")
+            {
+                string name = customerOrders[0];
+                string product = customerOrders[1];
+                int quantity = int.Parse(customerOrders[2]);
+                if (IsValidProduct(allProducts, product))
+                {
+                    if (customersList.ContainsKey(name))
+                    {
+                        if (customersList[name].ShopList.ContainsKey(product))
+                        {
+                            customersList[name].ShopList[product] += quantity;
+                        }
+                        else
+                        {
+                            customersList[name].ShopList.Add(product, quantity);
+                        }
+                    }
+                    else
+                    {
+                        Customer customer = new Customer(name);
+                        Dictionary<string, int> customerShopList = new Dictionary<string, int>
+                        {
+                            { product, quantity }
+                        };
+                        customer.ShopList = customerShopList;
+                        customersList.Add(name, customer);
+                    }
+                }
+                customerOrders = Console.ReadLine().Split(new char[] { '-', ',' });
+            }
+            return customersList;
+        }
+        public static void ExerciseSix()
+        {
+            // Get Bill
+            //Example Input:
+/*       
+4
+Cola-1.25
+Sandwich-2.30
+Bira-0.01
+Bira-2
+Toshko-Bira,3
+Mira-Sandwich,1
+Marto-Kola,2
+end of clients
+ */
+            Dictionary<string, decimal> allProducts = AddProducts();
+            Dictionary<string, Customer> customerList = Customer(allProducts);
+
+            Console.WriteLine();
+            decimal TotalBill = 0;
+            foreach (var customer in customerList.Values)
+            {
+                Console.WriteLine("Customer Name: " + customer.Name);
+                foreach (var productName in customer.ShopList.Keys)
+                {
+                    Console.WriteLine($"--product: {productName} - quantity: {customer.ShopList[productName]} ");
+                }
+                Console.WriteLine($"Customer Bill: {customer.Bill(allProducts)} dollars");
+                TotalBill += customer.Bill(allProducts);
+                Console.WriteLine();
+            }
+            Console.WriteLine($"Total Bill: {TotalBill:f2}");
+        }
+
+        public static bool IsValidProduct(Dictionary<string, decimal> allProducts, string product )
+        {
+            bool validProduct = false;
+            if (allProducts.ContainsKey(product))
+            {
+                validProduct= true;
+            }
+            return validProduct;
+        }
+        public static Library GetLibrary()
+        {
             int numberOfBooks = int.Parse(Console.ReadLine());
             int count = 1;
             List<Book> books = new List<Book>();
@@ -50,7 +155,17 @@ namespace OOP_Exercises
  
         public static void ExrciseFour()
         {
-            Library library = GetLabrary();
+
+            // Expected Input: Copy the text below
+/*
+5
+LOTR Tolkien GeorgeAllen 29.07.1954 0395082999 30.00
+Hobbit Tolkien GeorgeAll 21.09.1937 0395082888 10.25
+HP1 JKRowling Bloomsbury 26.06.1997 0395082777 15.50
+HP7 JKRowling Bloomsbury 21.07.2007 0395082666 20.00
+AC OBowden PenguinBooks 20.11.2009 0395082555 14.00
+*/
+            Library library = GetLibrary();
             var authors = library.Books.Select(x => x.Author).Distinct().ToList();
 
             foreach (var author in authors)
@@ -59,14 +174,25 @@ namespace OOP_Exercises
                 Console.WriteLine($"{author} -> {priceTotal:f2}");
             }
         }
-        public static void ExersiceFive()
+        public static void ExerciseFive()
         {
-            Library library = GetLabrary();
-            DateTime releaseDateAfter = DateTime.ParseExact(Console.ReadLine(), "dd.MM.yyyy", null);
+            //expected input:
+/*
+5
+LOTR Tolkien GeorgeAllen 29.07.1954 0395082999 30.00
+Hobbit Tolkien GeorgeAll 21.09.1937 0395082888 10.25
+HP1 JKRowling Bloomsbury 26.06.1997 0395082777 15.50
+HP7 JKRowling Bloomsbury 21.07.2007 0395082666 20.00
+AC OBowden PenguinBooks 20.11.2009 0395082555 14.00
+30.07.1954
+*/
+
+            Library library = GetLibrary();
+            DateTime releaseDateAfter = DateTime.ParseExact(Console.ReadLine(), "dd.MM.yyyy",null);
             List<Book> books = library.Books.Where(date => date.ReleaseDate >= releaseDateAfter).ToList();
             for (int i = 0; i < books.Count; i++)
             {
-                Console.WriteLine($"{books[i].Title} -> {books[i].ReleaseDate}");
+                Console.WriteLine($"{books[i].Title} -> {books[i].ReleaseDate.ToShortDateString()}");
             }
            
         }
@@ -74,8 +200,12 @@ namespace OOP_Exercises
         public static void ExerciseOne()
         {
             // Exercise 1 - Get Working days for a period of time
-            // Expected Input - 11-04-2016 /r  14-04-2016
-            // Expected Output - (Number of days)
+            //Expected Input - Copy dates below
+/*
+11-04-2016
+14-04-2016
+*/
+
             string startDate = Console.ReadLine();
             string endDate = Console.ReadLine();
             DatePeriod datePeriod = new DatePeriod(Read(startDate), Read(endDate));
@@ -85,7 +215,11 @@ namespace OOP_Exercises
         public static void ExerciseTwo()
         {
             // Exercise 2 - Intersecting Circles ( True - False )
-            // Expected Input - 4 4 2 / r  8 8 1
+            // Expected Input -
+/*
+4 4 2 
+8 8 1
+*/
             // Expected Output - (Yes - No)
             double[] firstInput = Console.ReadLine().Split().Select(double.Parse).ToArray();
             double[] secondInput = Console.ReadLine().Split().Select(double.Parse).ToArray();
@@ -98,11 +232,21 @@ namespace OOP_Exercises
         public static void ExerciseThree()
         {
             // Exercise 3 - Get Average Student Grade - 
-            // {Number of Students} /r {Name} {Grade} {Grade}..
+            // Expected Input: Copy below
+
+/*
+6
+Petar 3 5 4 3 2 5 6 2 6
+Mitko 6 6 5 6 5 6
+Gosho 6 6 6 6 6 6
+Ani 6 5 6 5 6 5 6 5
+Iva 4 5 4 3 4 5 2 2 4
+Ani 5.50 5.25 6.00
+*/
             int numberStudents = int.Parse(Console.ReadLine());
             List<Student> allStudents = ReadStudent(numberStudents);
             allStudents.ForEach(
-                student => Console.WriteLine($"{student.Name} -> {Math.Round(student.AverageGrade, 2)}"));
+                student => Console.WriteLine($"{student.Name} -> {Math.Round(student.AverageGrade, 2):f2}"));
         }
 
         //Exercise 1 - Read Date
