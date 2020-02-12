@@ -2,6 +2,7 @@
 using OOP_Exercises.Exercise_3;
 using OOP_Exercises.Exercise_4;
 using OOP_Exercises.Exercise_6;
+using OOP_Exercises.Exercise_7;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,9 +20,95 @@ namespace OOP_Exercises
             //ExerciseThree();
             //ExrciseFour();
             //ExerciseFive();
-            ExerciseSix();
-
+            //ExerciseSix();
+            ExerciseSeven();
         }
+
+        public static Dictionary<string, StudentExersice7> GetAttendancyForStudents()
+        {
+            string input = Console.ReadLine();
+            Dictionary<string, StudentExersice7> allStudents = new Dictionary<string, StudentExersice7>();
+            while (input.ToLower() != "end of dates")
+            {
+                List<DateTime> attendancy = new List<DateTime>();
+                string[] inputArray = input.Split(new char[] { ',', ' ' });
+                string name = inputArray[0];
+                if (allStudents.ContainsKey(name))
+                {
+                    for (int i = 1; i < inputArray.Length; i++)
+                    {
+                        DateTime date = DateTime.ParseExact(inputArray[i], "dd/MM/yyyy", null);
+                        allStudents[name].AttendaceDates.Add(date);
+                        attendancy.Add(date);
+                    }
+                    
+                }
+                else
+                {
+                    for (int i = 1; i < inputArray.Length; i++)
+                    {
+                        DateTime date = DateTime.ParseExact(inputArray[i], "dd/MM/yyyy", null);
+                        attendancy.Add(date);
+                    }
+                    StudentExersice7 student7 = new StudentExersice7(name, attendancy);
+                    allStudents.Add(name, student7);
+                    input = Console.ReadLine();
+                }
+       
+
+              
+            }
+            AddComments(allStudents);
+            return allStudents;
+        }
+        public static void ExerciseSeven()
+        {
+            //expected input:
+/*
+nakov 22/08/2016,20/08/2016
+simeon10 22/08/2016
+end of dates
+nakov-Excellent algorithmetic thinking.
+Gesh4o-Total noob.
+end of comments
+*/
+            Dictionary<string, StudentExersice7> studentExersice7 = GetAttendancyForStudents();
+
+            Console.WriteLine();
+            foreach (var student in studentExersice7.Values)
+            {
+                Console.WriteLine($"Name: {student.Name}");
+                Console.WriteLine("Comments:");
+                if (student.Comments != null)
+                {
+                    Console.WriteLine($"-{student.Comments}");
+                }
+                Console.WriteLine("Dates attended:");
+                student.AttendaceDates.ForEach(date => Console.WriteLine(date.ToShortDateString()));
+                Console.WriteLine();
+            }
+        }
+
+
+
+
+
+        public static void AddComments(Dictionary<string, StudentExersice7> students)
+        {
+            string input = Console.ReadLine();
+            while (input.ToLower() != "end of comments")
+            {
+                string[] inputArray = input.Split("-");
+                string name = inputArray[0];
+                string comment = inputArray[1];
+                if (students.ContainsKey(name))
+                {
+                    students[name].Comments = comment;
+                }
+                input = Console.ReadLine();
+            }
+        }
+
 
         public static Dictionary<string, decimal>  AddProducts()
         {
