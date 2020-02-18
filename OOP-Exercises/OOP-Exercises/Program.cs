@@ -82,33 +82,33 @@ namespace OOP_Exercises
 
         public static void ExerciseEight()
         {
-//Valid Input: 
+            //Valid Input: 
 /*
 Plovdiv => 5 seats
-Ani Kirilova | ani88@abv.bg | 27 - May - 2016
-Todor Nikolov  | tod92@mente.org | 28 - May - 2016
-Kiril Stoyanov | kirtak@gmail.com | 27 - May - 2016
-Stefka Petrova | st96@abv.bg | 26 - May - 2016
-Ani Kirilova   | ani.k@yahoo.co.uk | 27 - May - 2016
-Ivan Ivanov    | ivan.i.ivanov@gmail.com | 27 - May - 2016
+Ani Kirilova   |ani88@abv.bg             |27-May-2016
+Todor Nikolov  | tod92@mente.org         | 28-May-2016
+Kiril Stoyanov |  kirtak@gmail.com       | 27-May-2016
+Stefka Petrova |   st96@abv.bg           | 26-May-2016
+Ani Kirilova   |     ani.k@yahoo.co.uk   | 27-May-2016
+Ivan Ivanov    |  ivan.i.ivanov@gmail.com| 27-May-2016
 Veliko Tarnovo => 3 seats
-Petya Stoyanova | stoyanova_p@abv.bg | 27 - May - 2016
-Stoyan Kirilov  | 100yan @gmail.com | 24 - May - 2016
-Didi Miteva     | miteva_d@yahoo.co.uk | 28 - May - 2016
-Kiril Nikolov   | kiro@kiro.net | 25 - May - 2016
-Ivan Stefanov   | ivan.stef86@gmail.com | 27 - May - 2016
-Maria Kirova    | maria.k@abv.bg | 26 - May - 2016
+Petya Stoyanova | stoyanova_p@abv.bg    | 27-May-2016
+Stoyan Kirilov  | 100yan@gmail.com      | 24-May-2016
+Didi Miteva     | miteva_d@yahoo.co.uk  | 28-May-2016
+Kiril Nikolov   | kiro@kiro.net         | 25-May-2016
+Ivan Stefanov   | ivan.stef86@gmail.com | 27-May-2016
+Maria Kirova    | maria.k@abv.bg        | 26-May-2016
 Varna => 2 seats
-Ivan Ivanov | ivan.ivanov96@gmail.com | 29 - May - 2016
-Stoyan Petrov    | sto.sto.sto@gmail.com | 27 - May - 2016
-Ivan Ivanov      | vankata@mail.bg | 1 - Jun - 2016
-Kiril Anev       | anev_k@yahoo.co.uk | 27 - May - 2016
-Ivan Ivanov      | vanyo98@abv.bg | 29 - May - 2016
-Petya Vladimirova| pete98@abv.bg | 20 - May - 2016
-Ivan Ivanov      | ivan.94.ivan@gmail.com | 29 - May - 2016
+Ivan Ivanov      | ivan.ivanov96@gmail.com| 29-May-2016
+Stoyan Petrov    | sto.sto.sto@gmail.com  | 27-May-2016
+Ivan Ivanov      | vankata@mail.bg        | 1-Jun-2016
+Kiril Anev       | anev_k@yahoo.co.uk     | 27-May-2016
+Ivan Ivanov      | vanyo98@abv.bg         | 29-May-2016
+Petya Vladimirova|pete98@abv.bg           | 20-May-2016
+Ivan Ivanov      | ivan.94.ivan@gmail.com | 29-May-2016
 End
 */
-                List<Town> towns = GetTowns();
+            List<Town> towns = GetTowns();
             List<GroupOfStudents> groups = Groups(towns);
             Console.WriteLine();
             Console.WriteLine($"Created {groups.Count} groups in {towns.Count} towns:");
