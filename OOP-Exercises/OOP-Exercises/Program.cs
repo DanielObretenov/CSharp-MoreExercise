@@ -3,10 +3,12 @@ using OOP_Exercises.Exercise_3;
 using OOP_Exercises.Exercise_4;
 using OOP_Exercises.Exercise_6;
 using OOP_Exercises.Exercise_7;
+using OOP_Exercises.Exercise_8;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace OOP_Exercises
 {
@@ -21,9 +23,130 @@ namespace OOP_Exercises
             //ExrciseFour();
             //ExerciseFive();
             //ExerciseSix();
-            ExerciseSeven();
+            //ExerciseSeven();
+            ExerciseEight();
         }
 
+        public static List<Town> GetTowns()
+        {
+            List<Town> towns = new List<Town>();
+
+            string input = Console.ReadLine();
+            while (input.ToLower() != "end")
+            {
+
+                string townRegex = @"([a-zA-Z ]*)=>\s+(\d{1,4}) seats";
+                string studentRegex = @"(^[a-zA-Z0-9_ ]*)\|([a-zA-Z0-9_ .]*@[a-zA-Z.]*.[a-zA-Z ]*)\|([\s]*\d{1,2}-[a-zA-Z]{3}-\d{4})";
+
+                Regex townExpression = new Regex(townRegex);
+                Regex studentExpression =  new Regex(studentRegex);
+
+                Town currentTown = new Town();
+
+                if (townExpression.IsMatch(input))
+                {
+
+                    Match m = townExpression.Match(input);
+                    string town = m.Groups[1].ToString().Trim();
+                    bool isValidCount = int.TryParse(m.Groups[2].ToString(), out int seatCount);
+                    currentTown = new Town
+                    {
+                        Name = town,
+                        SeatCount = seatCount,
+                        Students = new List<StudentInfo>()
+                    };
+                    towns.Add(currentTown);
+
+
+                }
+                else if (studentExpression.IsMatch(input))
+                {
+                    Match m = studentExpression.Match(input);
+                    string name = m.Groups[1].ToString().Trim();
+                    string email = m.Groups[2].ToString().Trim();
+                    string[] formats = new string[] { "d-MMM-yyyy", "dd-MMM-yyyy" };
+                    DateTime registerDate = DateTime.ParseExact(m.Groups[3].ToString().Trim(), formats, null);
+                    StudentInfo studentInfo = new StudentInfo(name, email)
+                    {
+                        RegisterDate = registerDate
+                    };
+                    
+                    towns[towns.Count - 1].Students.Add(studentInfo);
+
+                }
+                input = Console.ReadLine();
+
+            }
+            return towns;
+        }
+
+        public static void ExerciseEight()
+        {
+//Valid Input: 
+/*
+Plovdiv => 5 seats
+Ani Kirilova | ani88@abv.bg | 27 - May - 2016
+Todor Nikolov  | tod92@mente.org | 28 - May - 2016
+Kiril Stoyanov | kirtak@gmail.com | 27 - May - 2016
+Stefka Petrova | st96@abv.bg | 26 - May - 2016
+Ani Kirilova   | ani.k@yahoo.co.uk | 27 - May - 2016
+Ivan Ivanov    | ivan.i.ivanov@gmail.com | 27 - May - 2016
+Veliko Tarnovo => 3 seats
+Petya Stoyanova | stoyanova_p@abv.bg | 27 - May - 2016
+Stoyan Kirilov  | 100yan @gmail.com | 24 - May - 2016
+Didi Miteva     | miteva_d@yahoo.co.uk | 28 - May - 2016
+Kiril Nikolov   | kiro@kiro.net | 25 - May - 2016
+Ivan Stefanov   | ivan.stef86@gmail.com | 27 - May - 2016
+Maria Kirova    | maria.k@abv.bg | 26 - May - 2016
+Varna => 2 seats
+Ivan Ivanov | ivan.ivanov96@gmail.com | 29 - May - 2016
+Stoyan Petrov    | sto.sto.sto@gmail.com | 27 - May - 2016
+Ivan Ivanov      | vankata@mail.bg | 1 - Jun - 2016
+Kiril Anev       | anev_k@yahoo.co.uk | 27 - May - 2016
+Ivan Ivanov      | vanyo98@abv.bg | 29 - May - 2016
+Petya Vladimirova| pete98@abv.bg | 20 - May - 2016
+Ivan Ivanov      | ivan.94.ivan@gmail.com | 29 - May - 2016
+End
+*/
+                List<Town> towns = GetTowns();
+            List<GroupOfStudents> groups = Groups(towns);
+            Console.WriteLine();
+            Console.WriteLine($"Created {groups.Count} groups in {towns.Count} towns:");
+            foreach (var group in groups.OrderBy(x => x.Town.Name))
+            {
+                string allStudentsPerGroup = string.Join(" ,",
+                group.Students.Select(x => x.Email.ToString()));
+                Console.Write($"{group.Town.Name} => {allStudentsPerGroup}");
+                Console.WriteLine();
+            }
+
+            //Created 8 groups in 3 towns:
+            //Plovdiv => st96@abv.bg, ani.k @yahoo.co.uk, ani88 @abv.bg, ivan.i.ivanov @gmail.com, kirtak @gmail.com
+
+        }
+        public static List<GroupOfStudents> Groups(List<Town> towns)
+        {
+            List<GroupOfStudents> groups = new List<GroupOfStudents>();
+            foreach (var town in towns)
+            {
+                List<StudentInfo> studentInTown = town.Students.
+                    OrderBy(x => x.RegisterDate).ThenBy(x=>x.Name).ThenBy(x=>x.Email).ToList();
+                
+                while(studentInTown.Any())
+                {
+                    List<StudentInfo> studentGroup = studentInTown.Take(town.SeatCount).ToList();
+                    studentInTown = studentInTown.Skip(town.SeatCount).ToList();
+                    GroupOfStudents group = new GroupOfStudents
+                    {
+                        Town = town,
+                        Students = studentGroup
+                    };
+                    groups.Add(group);
+                }
+
+            }
+            return groups;
+        }
         public static Dictionary<string, StudentExersice7> GetAttendancyForStudents()
         {
             string input = Console.ReadLine();
